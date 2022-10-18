@@ -55,3 +55,12 @@ print(brasil)
 fig = px.line(brasil, 'observationdate', 'confirmed', title='Casos confirmados no Brasil')
 fig.show()
 
+
+# Novos casos por dia #############################################################################
+
+#  Técnica de programação funcional
+brasil['novoscasos'] = list( map(
+    lambda x: 0 if (x==0) else brasil['confirmed'].iloc[x] - brasil['confirmed'].iloc[x-1], np.arange(brasil.shape[0])
+) )
+
+print(brasil)
