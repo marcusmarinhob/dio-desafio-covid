@@ -65,6 +65,17 @@ brasil['novoscasos'] = list( map(
 
 print(brasil)
 
-# Visualizando
-fig2 = px.line(brasil, x='observationdate', y='novoscasos', title='Novos casos confirmados no Brasil')
+# Visualizando novos casos
+fig2 = px.line(brasil, x='observationdate', y='novoscasos', title='Novos casos por dia no Brasil')
 fig2.show()
+
+# Visualizando mortes
+fig3 = go.Figure()
+
+fig3.add_trace(
+    go.Scatter(x=brasil.observationdate, y=brasil.deaths, name="Mortes", mode="lines+markers", line={'color':'red'})
+)
+
+fig3.update_layout(title='Mortes por COVID-19 no Brasil')
+fig3.show()
+
