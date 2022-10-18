@@ -64,3 +64,7 @@ brasil['novoscasos'] = list( map(
 ) )
 
 print(brasil)
+
+# Visualizando
+fig2 = px.line(brasil, x='observationdate', y='novoscasos', title='Novos casos confirmados no Brasil')
+fig2.show()
