@@ -157,5 +157,25 @@ ax4.axhline(0, linestyle='dashed', c='black')
 plt.show()
 
 
+# ARIMA ########################################################################################################
+from pmdarima.arima import auto_arima
+
+modelo = auto_arima(confirmados)
+
+fig6 = go.Figure( go.Scatter(
+    x= confirmados.index, y= confirmados, name= 'Observados'
+))
+
+fig6.add_trace(go.Scatter(
+    x= confirmados.index, y= modelo.predict_in_sample(), name= 'Preditos'
+))
+
+fig6.add_trace(go.Scatter(
+    x= pd.date_range('2020-05-20', '2020-06-20'), y= modelo.predict(31), name= 'Forecast'
+))
+
+fig6.update_layout(title='Previsão de casos confirmados no Brasil para os próximos 30 dias')
+fig6.show()
+
 
 
