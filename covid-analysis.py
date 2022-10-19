@@ -177,5 +177,40 @@ fig6.add_trace(go.Scatter(
 fig6.update_layout(title='Previsão de casos confirmados no Brasil para os próximos 30 dias')
 fig6.show()
 
+# MODELO DE CRESCIMENTO ##########################################################################################
+from fbprophet import Prophet
+
+# Preprocessamentos
+train = confirmados.reset_index()[:-5]
+test = confirmados.reset_index()[-5:]
+
+# Renomeando colunas
+train.rename(columns={'observationdate':'ds', 'confirmed': 'y'}, inplace=True)
+test.rename(columns={'observationdate':'ds', 'confirmed': 'y'}, inplace=True)
+
+# Definir o modelo de crescimento
+profeta = Prophet(growth='logistic', changepoints['2020-03-21', '2020-03-30', '2020-04-25','2020-05-03', '2020-05-10'])
+
+# pop = 211463256
+pop = 1000000
+train['cap'] = pop
+
+# Treina o modelo
+profeta.fit(train)
+
+# Construir previsões para o futuro
+future_dates = profeta.make_future_dataframe(periods=200)
+forecast = profeta.prefict(future_dates)
+
+
+# Mostrar gráfico
+
+fig7 = go.Figure()
+
+fig7.add_trace(go.Scatter(x=forecast.ds, y= forecast.yhat, name='Predição'))
+fig7.add_trace(go.Scatter(x=test.index, y=test, name='Observados - Teste'))
+fig7.add_trace(go.Scatter(x=train.ds, y=train.y, name='Observados - Treino'))
+fig7.update_layout(title='Predições de casos confirmados no Brasil')
+fig7.show()
 
 
