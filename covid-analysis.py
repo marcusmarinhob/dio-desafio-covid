@@ -98,7 +98,7 @@ def taxa_crescimento(data, variable, data_inicio=None, data_fim=None):
     passado = data.loc[data.observationdate == data_inicio, variable].values[0]
     presente = data.loc[data.observationdate == data_fim, variable].values[0]
 
-    # Define o número de pontso no tempo que vamos avaliar
+    # Define o número de pontos no tempo que vamos avaliar
     n = (data_fim - data_inicio).days
 
     # Calcular a taxa
@@ -110,3 +110,28 @@ def taxa_crescimento(data, variable, data_inicio=None, data_fim=None):
 print(taxa_crescimento(brasil, 'confirmed'))
 
 
+def taxa_crescimento_diaria(data, variable, data_inicio=None):
+    # Se data inicio for None, define como a primeira data disponível
+    if data_inicio == None:
+        data_inicio = data.observationdate.loc[data[variable] > 0].min()
+    else:
+        data_inicio = pd.to_datetime(data_inicio)
+
+    data_fim = data.observationdate.max()
+
+    # Define o número de pontos no tempo que vamos avaliar
+    n = (data_fim - data_inicio).days
+
+    # Taxa calculada de um dia para o outro
+    taxas = list( map(
+        lambda x: (data[variable].iloc[x] - data[variable].iloc[x-1]) / data[variable].iloc[x-1], range(1, n+1)
+    ))
+
+    return np.array(taxas) * 100
+
+tx_dia = taxa_crescimento_diaria(brasil, 'confirmed')
+
+primeiro_dia = brasil.observationdate.loc[brasil.confirmed >0].min()
+
+fig4 = px.line(x=pd.date_range(primeiro_dia, brasil.observationdate.max())[1:], y=tx_dia, title="Taxa de crescimento de casos confirmados no Brasil")
+fig4.show()
