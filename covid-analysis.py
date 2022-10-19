@@ -135,3 +135,27 @@ primeiro_dia = brasil.observationdate.loc[brasil.confirmed >0].min()
 
 fig4 = px.line(x=pd.date_range(primeiro_dia, brasil.observationdate.max())[1:], y=tx_dia, title="Taxa de crescimento de casos confirmados no Brasil")
 fig4.show()
+
+
+# Predições #####################################################################################################################################
+from statsmodels.tsa.seasonal import seasonal_decompose
+import matplotlib.pylab as plt
+
+confirmados = brasil.confirmed
+confirmados.index = brasil.observationdate
+
+print(confirmados)
+
+res = seasonal_decompose(confirmados)
+
+fig5, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1, figsize=(10, 8))
+ax1.plot(res.observed)
+ax2.plot(res.trend)
+ax3.plot(res.seasonal)
+ax4.plot(confirmados.index, res.resid)
+ax4.axhline(0, linestyle='dashed', c='black')
+plt.show()
+
+
+
+
